@@ -1,43 +1,45 @@
-pollutantmean <- function(directory, pollutant, id = 1:332) {
-  ## 'directory' is a character vector of length 1 indicating
-  ## the location of the CSV files
-  
-  ## 'pollutant' is a character vector of length 1 indicating
-  ## the name of the pollutant for which we will calculate the
-  ## mean; either "sulfate" or "nitrate".
-  
-  ## 'id' is an integer vector indicating the monitor ID numbers
-  ## to be used
-  
-  ## Return the mean of the pollutant across all monitors list
-  ## in the 'id' vector (ignoring NA values)
-}
-
 complete <- function(directory, id = 1:332) {
-  ## 'directory' is a character vector of length 1 indicating
-  ## the location of the CSV files
-  
-  ## 'id' is an integer vector indicating the monitor ID numbers
-  ## to be used
-  
-  ## Return a data frame of the form:
-  ## id nobs
-  ## 1  117
-  ## 2  1041
-  ## ...
-  ## where 'id' is the monitor ID number and 'nobs' is the
-  ## number of complete cases
-}
-
-corr <- function(directory, threshold = 0) {
-  ## 'directory' is a character vector of length 1 indicating
-  ## the location of the CSV files
-  
-  ## 'threshold' is a numeric vector of length 1 indicating the
-  ## number of completely observed observations (on all
-  ## variables) required to compute the correlation between
-  ## nitrate and sulfate; the default is 0
-  
-  ## Return a numeric vector of correlations
+    ## 'directory' is a character vector of length 1 indicating
+    ## the location of the CSV files
+    monitorvector = id
+    filelist = list.files(directory)
+    filecount = length(id)
+    print(filecount)
+    ## 'id' is an integer vector indicating the monitor ID numbers
+    ## to be used
+    id = integer(filecount)
+    nobs = integer(filecount)
+    
+    ## Return a data frame of the form:
+    ## id nobs
+    ## 1  117
+    ## 2  1041
+    ## ...
+    ## where 'id' is the monitor ID number and 'nobs' is the
+    ## number of complete cases
+    index = 0
+    for (i in monitorvector){
+        index = index + 1
+        
+        ## i corresponds to the number of the monitoring station
+        id[index] = i
+        
+        ## read the file
+        filename = paste(directory, filelist[i], sep = "\\")
+        
+        f = read.csv(filename)        
+        
+        ## subset the non-NAs pollutants 
+        y = nrow(f[complete.cases(f),])
+        #print(y)
+        ## how many? and store in counts
+        nobs[index] = y
+    }
+    
+    ## create a data.frame
+    df = data.frame(id, nobs)
+    
+    ## return said data.frame
+    df
 }
 

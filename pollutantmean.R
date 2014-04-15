@@ -1,43 +1,34 @@
 pollutantmean <- function(directory, pollutant, id = 1:332) {
-  ## 'directory' is a character vector of length 1 indicating
-  ## the location of the CSV files
-  
-  ## 'pollutant' is a character vector of length 1 indicating
-  ## the name of the pollutant for which we will calculate the
-  ## mean; either "sulfate" or "nitrate".
-  
-  ## 'id' is an integer vector indicating the monitor ID numbers
-  ## to be used
-  
-  ## Return the mean of the pollutant across all monitors list
-  ## in the 'id' vector (ignoring NA values)
+   ## 'directory' is a character vector of length 1 indicating
+   ## the location of the CSV files
+   filelist = list.files(directory)
+   ##print(filelist)
+   ## let's set the working directory to that what's passed in
+   ##setwd(directory)
+   ## 'pollutant' is a character vector of length 1 indicating
+   ## the name of the pollutant for which we will calculate the
+   ## mean; either "sulfate" or "nitrate".
+   
+   ## res is the vector containing each value
+   res=numeric(0)
+   
+   ## 'id' is an integer vector indicating the monitor ID numbers
+   ## to be used
+   for (i in id) {      
+       ## open each file
+       filename = paste(directory, filelist[i], sep = "\\")
+       ##print(filename)
+       f = read.csv(filename)
+       z = f[pollutant]
+       
+       ## subset the non-NAs using the proper pollutant 
+       y = !is.na(z)
+       z = z[y]
+       ## add to the existing vector
+       res = c(res, z)
+   }
+ 
+   ## Return the mean of the pollutant across all monitors list
+   ## in the 'id' vector (ignoring NA values)
+   print(mean(res), digits=4)
 }
-
-complete <- function(directory, id = 1:332) {
-  ## 'directory' is a character vector of length 1 indicating
-  ## the location of the CSV files
-  
-  ## 'id' is an integer vector indicating the monitor ID numbers
-  ## to be used
-  
-  ## Return a data frame of the form:
-  ## id nobs
-  ## 1  117
-  ## 2  1041
-  ## ...
-  ## where 'id' is the monitor ID number and 'nobs' is the
-  ## number of complete cases
-}
-
-corr <- function(directory, threshold = 0) {
-  ## 'directory' is a character vector of length 1 indicating
-  ## the location of the CSV files
-  
-  ## 'threshold' is a numeric vector of length 1 indicating the
-  ## number of completely observed observations (on all
-  ## variables) required to compute the correlation between
-  ## nitrate and sulfate; the default is 0
-  
-  ## Return a numeric vector of correlations
-}
-
